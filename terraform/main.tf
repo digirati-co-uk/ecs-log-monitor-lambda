@@ -61,3 +61,24 @@ resource "aws_iam_role_policy_attachment" "ecs_log_monitor_logging" {
   role       = aws_iam_role.ecs_log_monitor_exec_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
+
+data "aws_iam_policy_document" "ecs_permissions" {
+  statement {
+    actions = [
+      "ecs:DescribeServices",
+      "ecs:UpdateService"
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "ecs_permissions" {
+  name   = "${var.prefix}LogMonitorRestartECS"
+  policy = data.aws_iam_policy_document.ecs_permissions.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_permissions" {
+  role       = aws_iam_role.ecs_log_monitor_exec_role.name
+  policy_arn = aws_iam_policy.ecs_permissions.arn
+}
