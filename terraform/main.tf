@@ -1,6 +1,6 @@
 
 
-local {
+locals {
   filter_name = var.subscription_filter_name != "" ? var.subscription_filter_name : "${var.prefix}-ecs-log-monitor"
 }
 
