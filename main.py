@@ -1,14 +1,22 @@
 import json
 import boto3
 import os
+import base64
+import zlib
 
 
 def lambda_handler(event, context):
     print("Received event:")
     print(json.dumps(event))
 
+    data = event["awslogs"]["data"]
+    json_str = zlib.decompress(base64.b64decode(data), 16 + zlib.MAX_WBITS).decode('utf-8')
+
+    print("Decoded event:")
+    print(json_str)
+
     # log stream is in format <ecs-service>/<container>/<service-id>, use this to work out which svc to restart
-    log_stream = event.get("logStream", "")
+    log_stream = json.loads(json_str).get("logStream", "")
 
     if not log_stream:
         print("Could not determine log stream, aborting")
