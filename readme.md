@@ -27,3 +27,11 @@ Variables:
 * `log_group` - Cloudwatch log group to create subscription for
 * `log_filter_pattern` - [Filter pattern](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for subscription filter
 * `subscription_filter_name` - Optional name for subscription filter, defaults to `"${var.prefix}-ecs-log-monitor"`
+
+## Verify Setup
+
+Once the TF is applied you can verify setup by manually triggering a log-event containing the relevant `log_filter_pattern`:
+
+```bash
+aws logs put-log-events --log-group-name <log-group> --log-stream-name <stream> --log-events "[{\"timestamp\":<CURRENT-TIMESTAMP>, \"message\": \"<LOG_FILTER_PATTERN>\"}]"
+```
